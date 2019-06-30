@@ -1,24 +1,35 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# @Author:郑彬彬
-# @date: 2019/6/28 16:42
-# github:https://github.com/zhengbinbin
+# @author 郑彬彬
+# @{DATE}
+# github：https://github.com/zhengbinbin
 
-import pexpect
-def login(ip, password, cmd):
-    #action = ('ssh -p ' + port + ' ' + user + '@' + ip)
-    child = pexpect.spawn('ssh root@%s "%s"' % (ip, cmd) )
-    i = child.expect(['password:', 'continue connecting (yes/no)?'], timeout=5)
-    if i == 0:
-        child.sendline(password)
-    elif i == 1:
-        child.sendline('yes\n')
-        child.expect('password:')
-        child.sendline(password)
-    child.sendline(cmd)
+import telnetlib
+import threading
+
+
+def get_ip_status(ip, port):
+    server = telnetlib.Telnet()
+    try:
+        server.open(ip, port)
+        print('{0} port {1} is open'.format(ip, port))
+    except Exception as err:
+        pass
+        #print('{0} port {1} is not open'.format(ip, port))
+    finally:
+        server.close()
+
 
 if __name__ == '__main__':
-    ip = '10.117.185.250'
-    password = 'E&OvP0suGQv4ID@m'
-    cmd = 'touch a'
-    login(ip, password,cmd)
+    host = '112.124.120.67'
+    threads = []
+    for port in range(0, 65535):
+        t = threading.Thread(target=get_ip_status, args=(host, port))
+        t.start()
+        threads.append(t)
+
+    for t in threads:
+        t.join()
+
+#host = '112.124.120.67'
+#host = '10.162.53.136'

@@ -4,7 +4,7 @@
 # @{DATE}
 # github：https://github.com/zhengbinbin
 
-import pexpect, os
+import pexpect
 
 PROMPT = ["# ", ">>> ", "> ", "\$ "]
 
