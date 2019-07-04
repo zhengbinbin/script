@@ -7,7 +7,6 @@
 import telnetlib, threading, queue
 threads = []
 
-
 class Scanner():
     def __init__(self, fileIn, fileOut, fileResult):
         """端口扫描器"""
