@@ -23,31 +23,29 @@ class Scanner():
         self.q = queue.Queue(maxsize=10000)
         self.x = 0
         self.length = 0
-        self.fo = open(self.fileOut, 'r+')
-        self.fi = open(self.fileIn, 'r+', encoding='UTF-8-sig')
         self.check_num_flag = False
         self.get_last_flag = False
 
     def sniffing(self, ip):
         """探嗅端口的方法"""
-        for port in range(1, 65536):
+        fo = open(self.fileOut, 'a+', encoding='UTF-8-sig')
+        for port in range(0, 65536):
             try:
                 self.server.open(ip, port)
-                self.fo.write(str(ip) + ' ' + str(port) + '\n')
                 print('{0} {1} is open.'.format(ip, port))
+                fo.write(str(ip) + ' ' + str(port) + '\n')
             except Exception as err:
                 print('{0} {1} is not open.'.format(ip, port))
                 pass
             finally:
                 self.server.close()
-        self.fo.close()
+        fo.close()
 
     def check_open(self):
         """取出队列中排队的ip，将其送给sniffing方法"""
         try:
             while True:
                 ip = self.q.get_nowait()
-                #print(ip)
                 sc.sniffing(ip)
         except Exception as err:
             pass
@@ -55,6 +53,7 @@ class Scanner():
     def get_host(self):
         """将文本中host信息改为二维列表
         同时将ip写入ipList列表"""
+        self.fi = open(self.fileIn, 'r+', encoding='UTF-8-sig')
         hosts = self.fi.readlines()
         for i in hosts:
             self.host_list.append(i.split())
@@ -72,8 +71,8 @@ class Scanner():
             self.q.put(ip)
 
     def create_threads(self):
-        """为check_open方法创建进程(最多500个)，并将所有进程装进列表threads里面"""
-        for i in range(500):
+        """为check_open方法创建10线程，并将所有进程装进列表threads里面"""
+        for i in range(10):
             t = threading.Thread(target=self.check_open)
             t.start()
             threads.append(t)
@@ -141,14 +140,14 @@ class Scanner():
         for i in self.list_tmp_new:
             for j in self.host_list:
                 if i[0] == j[0]:
-                    i[1] = i[1] + ' ' + j[1] + ' ' + j[2]
+                    i[1] = i[1] + '  ' + j[1] + '  ' + j[2]
                     break
         #print(self.list_tmp_new)
 
 if __name__ == '__main__':
-    fileIn = r'E:\fileIn.txt'
-    fileOut = r'E:\fileOut.txt'
-    fileResult = r'E:\fileResult.txt'
+    fileIn = r'/home/zhengbb/python/fileIn.txt'
+    fileOut = r'/home/zhengbb/python/fileOut.txt'
+    fileResult = r'/home/zhengbb/python/fileResult.txt'
 
     sc = Scanner(fileIn, fileOut, fileResult)
     sc.get_host()
