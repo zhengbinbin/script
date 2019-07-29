@@ -29,8 +29,8 @@ class proxy():
 
     def checkIP(self):
         """检测IP是否通外网，再检测是否为最新IP"""
-        response = requests.get('http://www.baidu.com')
-        while self.flag < 5 and response.status_code != 200:
+        result = int(os.popen('curl --connect-timeout 10 -s -w "%{http_code}" "www.baidu.com" -o /dev/null').read())
+        while self.flag < 5 and result != 200:
             self.flag += 1
             self.pppoe()
 
@@ -43,20 +43,21 @@ class proxy():
         # 执行入库检测
         list = []
         flag2 = 0
+        result = ''
         try:
             while True:
-                result = int(os.popen('curl -s "http://114.215.206.140:8118/syncproxy?machine_id=$HOSTNAME&port=33381&source=zhengwen_yg_curl&purpose=指数微信正文采集"').read())
-                re = int(result)
-                if re == 0:
+                result = os.popen('curl -s "http://114.215.206.140:8118/syncproxy?machine_id=$HOSTNAME&port=33381&source=zhengwen_yg_curl&purpose=指数微信正文采集"').read()
+                #re = int(result)
+                if result == '0':
                     flag2 += 1
                     print('检查该ip为重复的IP，将再次进行拨号...')
                     self.pppoe()
-                if re == 1:
+                if result == '1':
                     # 拨号成功
                     print('拨号成功，这是一个新IP')
                     break
         except Exception as e:
-            print('捕获到一个异常：' + e)
+            print('出现一个异常：')
             self.flag3 += 1
             list.append(result)
             self.pppoe()
@@ -68,8 +69,8 @@ class proxy():
                 f.write(self.time + '：连续 ' + str(flag2) + '次拨到重复的ip:' + '\n')
             if self.flag3 != 0:
                 f.write('检查发现拨号异常：')
-                for str in list:
-                    f.write(str + ' ')
+                for string in list:
+                    f.write(string + ' ')
                 f.write('\n')
             f.write('有效外网ip：' + A[1] + '\n')
             print('有效外网ip：' + A[1])
