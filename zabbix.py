@@ -9,9 +9,8 @@ from fuction import *
 
 #登录zabbix获取auth
 auth = authenticate(url, username, passwd)
-hostIP = '10.80.65.188'
-name = ipGetHostsid(hostIP, url, auth)
-hostid = name['hostid']
-itemid = (getHostsitemsid(hostid, 'system.cpu.util[,idle]', url, auth))
-print(itemid)
-print(getHostsitemsvalue(itemid, url, auth))
+hostIP = '10.46.67.243'
+hostid = getHostid(hostIP, url, auth)
+keys = (getKeys(hostid, url, auth))
+itemslist = getItemids(hostid, keys, url, auth)
+getValue(itemslist, url, auth)
