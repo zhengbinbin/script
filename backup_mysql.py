@@ -74,14 +74,14 @@ class mysql_bak():
 
 if __name__ == '__main__':
     date = (datetime.datetime.now() - datetime.timedelta(minutes=3)).strftime('%Y-%m-%d-%H-%M-%S')
-    user = 'root'  # 设置mysql登陆用户名
-    password = '7wg7QLyvNM8rVMT^'
-    database = 'postfix'  # 要备份的数据库名
+    user = ''  # 设置mysql登陆用户名
+    password = ''
+    database = ''  # 要备份的数据库名
     backup_dir = '/bak/mysql'  # 备份数据库路径
     logfile = '/bak/log'  # 备份数据库日志文件
     dumpfile = date + '-mysql.sql'  # 备份后的文件名
     archive = dumpfile + '.tar.gz'  # 压缩后的文件名
-    remoteip = '10.46.67.243'  # 异地备份机器ip（电信测试服务器）
+    remoteip = ''  # 异地备份机器ip（电信测试服务器）
     remotedir = '/bak/mysql/'  # 异地备份目录
     date_delete = datetime.datetime.now() - datetime.timedelta(days=3)
     re_date_nuix = time.mktime(date_delete.timetuple())
