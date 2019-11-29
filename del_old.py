@@ -51,12 +51,22 @@ class check_files():
             f.write(self.date + ' 备份成功\n')
 
 def main():
-    path = '/data3/qbo-platform/modules/elastic-search-interface'
-    bak_path = path + '/bak'
+    if len(sys.argv) == 1:
+        sys.exit()
+    elif len(sys.argv) == 2:
+        path = '/data3/qbo-platform/modules/elastic-search-interface'
+        bak_path = path + '/bak'
+        file = path + '/' + sys.argv[1]
+    else:
+        path = sys.argv[1]
+        bak_path = sys.argv[1] + '/' + sys.argv[2]
+        file = path + '/' + sys.argv[3]
+    # path = '/data3/qbo-platform/modules/elastic-search-interface'
+    # bak_path = path + '/bak'
     time = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
     date = datetime.datetime.now().strftime('%Y-%m-%d %H-%M-%S')
     targetfile = bak_path + '/' + time + '.tar.gz'
-    file = path + '/' + sys.argv[1]
+    #file = path + '/' + sys.argv[3]
     log = bak_path + '/log'
     checkFiles = check_files(path, bak_path, targetfile, log, date, file)
     checkFiles.back_jar()
